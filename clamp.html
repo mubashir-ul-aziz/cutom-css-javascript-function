@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+  button:hover , button:focus , button:focus-visible , button:focus-within , button:target , button:active , button:visited {
+    border: 4px solid #008cff;
+  }
+  .empty_input {
+    border: 2px solid #ff0000;
+  }
+  .outer_div {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #00000066;
+  }
+  .inner_div {
+    max-width: 400px;
+    width: 100%;
+  }
+  .clampForm  input {
+    /* width: 100%; */
+  }
+  .clampForm {
+    overflow: hidden;
+}
+  input, p, button, label, select {
+    width: 100%;
+    display: block;
+    font-size: 20px;
+    border: 4px solid #008cff00;
+  }
+  button.click_to_calculate {
+    /* max-width: 210px; */
+  }
+  body {
+    margin: 0;
+    padding: 0;
+  }
+  .value_output p {
+    margin: 0;
+  }
+</style>
+
+<body>
+  <div class="outer_div">
+    <div class="inner_div">
+      <div class="clampForm" name="clampForm">
+        <div class="most-pg-size">
+          <form action="">
+            <label for="cars">Most Page Width Sizes:</label>
+            <select id="select_scr_size" name="screen sizes">
+              <option value="Select">Select</option>
+              <option value="1920">1920</option>
+              <option value="1728">1728</option>
+              <option value="1600">1600</option>
+              <option value="1536">1536</option>
+              <option value="1440">1440</option>
+              <option value="1366">1366</option>
+              <option value="1280">1280</option>
+              <option value="1024">1024</option>
+              <option value="992">992</option>
+              <option value="767">767</option>
+            </select>
+          </form>
+        </div>
+        <p>Max Page Width Size <input class="form-control" for="number" id="max_screen_size" type="number"></p>
+        <p>Maximum Size <input class="form-control"  name="number"  id="max_value" type="number"></p>
+        <p>Minimum Size <input class="form-control" id="min_value" type="number"></p>
+        <p>Line Height <input class="form-control" id="lineheight_value" type="number"></p>
+        <button type="button" class="click_to_calculate" id="click_to_calculate" onclick="executeFunctions()">Click To Calculate</button>
+        <div class="result">
+            <div id="value_output" class="value_output"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+
+    var select_scr_size = document.getElementById("select_scr_size").value;
+    document.getElementById("max_screen_size").placeholder = select_scr_size;
+    var sel_opt_vl = document.getElementById('select_scr_size');
+    sel_opt_vl.addEventListener("change", sel_opt_vlFn);
+    function sel_opt_vlFn() {
+        document.getElementById("max_screen_size").value = sel_opt_vl.value;
+    }
+    function displayMessage(){
+    let max_screen_size = document.querySelector("#max_screen_size").value;
+    let max_value = document.querySelector("#max_value").value;
+    let min_value = document.querySelector("#min_value").value;
+    var line_heigh_val = document.getElementById("lineheight_value").value;
+    var line_heigh_per = line_heigh_val / max_value * 100 ;
+      
+     // Check if input field is empty
+    if (max_screen_size === "") {
+      document.querySelector("#max_screen_size").classList.add("empty_input");
+      return false;
+    } else {
+      document.querySelector("#max_screen_size").classList.remove("empty_input");
+    }
+    if (max_value === "") {
+      document.querySelector("#max_value").classList.add("empty_input");
+      return false;
+    }  else {
+      document.querySelector("#max_value").classList.remove("empty_input");
+    }
+    if (min_value === "" ) {
+      document.querySelector("#min_value").classList.add("empty_input");
+      document.querySelector("#min_value").value = '';
+      document.getElementById("value_output").innerText = "";
+      return false;
+    }  else {
+      document.querySelector("#min_value").classList.remove("empty_input");
+    }
+    let vw_value = (max_value* 100 / max_screen_size) ;
+    function addOneToDecimal(num) {
+    var decimalPart = num % 1;
+    var roundedDecimal = decimalPart.toFixed(2);
+    if (roundedDecimal.charAt(3) === '0') {
+      num += 0.01;
+    }
+    return num;
+      }
+      var result = addOneToDecimal(vw_value);
+      vw_value = result.toFixed(2);
+      let value_output = `<div><p>font-size : clamp(${min_value}px,${vw_value}vw,${max_value}px); </p>
+        <p>  line-height : ${line_heigh_per}%;</p></div>`;
+      document.querySelector("#value_output").innerHTML = value_output;
+    }
+    // click to copy function
+    function copyText() {
+      var text = document.getElementById("value_output").innerText;
+      var textarea = document.createElement("textarea");
+      textarea.value = text;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textarea);
+    }
+    function executeFunctions() {
+      displayMessage()
+      copyText()
+    }
+  </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <script>
+  function displayMessage(){
+  let max_screen_size = document.querySelector("#max_screen_size").value;
+  let max_value = document.querySelector("#max_value").value;
+  let min_value = document.querySelector("#min_value").value;
+  let vw_value = (max_value* 100 / max_screen_size) ;
+  function addOneToDecimal(num) {
+  var decimalPart = num % 1;
+  var roundedDecimal = decimalPart.toFixed(2);
+  if (roundedDecimal.charAt(3) === '0') {
+    num += 0.01;
+  }
+  return num;
+    }
+    var result = addOneToDecimal(vw_value);
+    vw_value = result.toFixed(2);
+    let value_output = `clamp(${min_value}px,${vw_value}vw,${max_value}px);`;
+    console.log(value_output);
+    document.querySelector("#value_output").innerHTML = value_output;
+  }
+  // click to copy function
+  function copyText() {
+    var text = document.getElementById("value_output").innerText;
+    var textarea = document.createElement("textarea");
+    textarea.value = text;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand("copy");
+    document.body.removeChild(textarea);
+  }
+  function executeFunctions() {
+    displayMessage()
+    copyText()
+  }
+</script> -->
+
+
+
+
+
+
+
+<!-- 
+Discover, Shop, Transform: Your Home Essentials
+
+Unleash Your Style: Shop and Transform.
+
+"Transform Your Spaces: Discover Home Decor, Kitchen Essentials, and Appliances that Elevate Your Lifestyle. Shop Now!"
+
+"Transform your home into a haven with our curated collection of exquisite home décor, kitchen essentials, and high-quality appliances. Discover the perfect blend of style and functionality to elevate your living spaces. From stunning décor accents to top-notch kitchen gadgets, our shop offers a wide range of products to suit your unique taste. Browse our selection, find inspiration, and create a home that reflects your personal style. Shop now and let us help you turn your house into a stylish sanctuary."
+
+
+"Elevate Your Home: Discover stylish home décor, essential kitchen items, and top-quality appliances. Create a space that reflects your unique style with our curated collection. From trendy accents to functional gadgets, find everything you need to transform your house into a haven. Shop now and turn your interior design dreams into reality."
+
+
+"Elevate Your Home: Discover a curated selection of stylish home décor, kitchen essentials, and top-notch appliances. Transform your space with our high-quality products. From trendy accents to functional gadgets, we have everything you need to create a cozy and stylish home. Explore our collection now and bring your interior design vision to life with ease and elegance."
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Elevate Your Home: Discover a curated selection of stylish home décor, kitchen essentials, and top-notch appliances.
+ From trendy accents to functional gadgets, we have everything you need to create a cozy and stylish home.
+ Explore our collection now and bring your interior design vision to life with ease and elegance." -->
